@@ -1,4 +1,4 @@
-import type { ConfigPlugin } from 'expo/config-plugins';
+import type { AndroidConfig, ConfigPlugin } from 'expo/config-plugins';
 import { withAppBuildGradle, withMainApplication } from 'expo/config-plugins';
 import { buildReactNativePackageFileResolution } from './react-native-package';
 
@@ -23,7 +23,7 @@ const REACT_HOST_IMPORT =
 export const withBinaryCreateGradleFile: ConfigPlugin = config =>
   withAppBuildGradle(config, gradleConfig => {
     gradleConfig.modResults.contents = addBinaryCreateGradleFile(
-      gradleConfig.modResults.contents,
+      gradleConfig.modResults,
     );
     return gradleConfig;
   });
@@ -40,11 +40,19 @@ export const withServedBundleReactHost: ConfigPlugin = config =>
     return mainApplicationConfig;
   });
 
-function addBinaryCreateGradleFile(buildGradle: string): string {
-  if (buildGradle.includes(GRADLE_FILE_NAME)) {
-    return buildGradle;
+function addBinaryCreateGradleFile({
+  contents,
+  language,
+}: AndroidConfig.Paths.GradleProjectFile): string {
+  if (contents.includes(GRADLE_FILE_NAME)) {
+    return contents;
   }
-  return `${buildGradle}${buildGradle.endsWith('\n') ? '' : '\n'}\n${GRADLE_FILE_APPLY_LINE}\n`;
+  if (language !== 'groovy') {
+    throw new Error(
+      `The app's build file is not Groovy, the language of the line that applies ${GRADLE_FILE_NAME}.`,
+    );
+  }
+  return `${contents}${contents.endsWith('\n') ? '' : '\n'}\n${GRADLE_FILE_APPLY_LINE}\n`;
 }
 
 function addServedBundleReactHost(mainApplication: string): string {

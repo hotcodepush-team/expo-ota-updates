@@ -2,6 +2,7 @@ import {
   cpSync,
   mkdtempSync,
   readFileSync,
+  renameSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -151,6 +152,15 @@ describe('withHotCodePush', () => {
 
     await expect(prebuild(projectRoot)).rejects.toThrow(
       'The Podfile has no use_native_modules! line to add the HotCodePushProtocol pod after.',
+    );
+  });
+
+  it("should throw when the app's build file is not Groovy", async () => {
+    const buildGradlePath = join(projectRoot, NATIVE_FILE_PATHS.buildGradle);
+    renameSync(buildGradlePath, `${buildGradlePath}.kts`);
+
+    await expect(prebuild(projectRoot)).rejects.toThrow(
+      "The app's build file is not Groovy, the language of the line that applies hotcodepush.gradle.",
     );
   });
 
