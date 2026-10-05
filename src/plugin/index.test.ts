@@ -14,8 +14,8 @@ import { compileModsAsync, IOSConfig } from 'expo/config-plugins';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import withHotCodePush from '.';
 
-// the native files `expo prebuild` generates for SDK 55, from expo-template-bare-minimum 55.0.43
-const FIXTURE_PATH = join(__dirname, 'fixtures', 'expo-sdk-55');
+// the native files `expo prebuild` generates per SDK, from expo-template-bare-minimum 55.0.43, 56.0.37 and 57.0.28
+const FIXTURE_NAMES = ['expo-sdk-55', 'expo-sdk-56', 'expo-sdk-57'];
 
 const NATIVE_FILE_PATHS = {
   appDelegate: 'ios/HelloWorld/AppDelegate.swift',
@@ -28,12 +28,14 @@ const NATIVE_FILE_PATHS = {
 
 type NativeFile = keyof typeof NATIVE_FILE_PATHS;
 
-describe('withHotCodePush', () => {
+describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
   let projectRoot: string;
 
   beforeEach(() => {
     projectRoot = mkdtempSync(join(tmpdir(), 'expo-ota-updates-'));
-    cpSync(FIXTURE_PATH, projectRoot, { recursive: true });
+    cpSync(join(__dirname, 'fixtures', fixtureName), projectRoot, {
+      recursive: true,
+    });
   });
 
   afterEach(() => {
