@@ -54,7 +54,7 @@ describe('withHotCodePush', () => {
       '[CP] Copy Pods Resources',
     ]);
     expect(readNativeFile(projectRoot, 'pbxproj')).toContain(
-      '$REACT_NATIVE_PATH/../@hotcodepush/react-native-code-push/scripts/binary-create-xcode.sh',
+      `HOTCODEPUSH_BINARY_CREATE=\\"$(\\"$NODE_BINARY\\" --print \\"require.resolve('@hotcodepush/react-native-code-push/scripts/binary-create-xcode.sh', { paths: [require.resolve('@hotcodepush/expo-ota-updates/package.json')] })\\")\\"`,
     );
   });
 
@@ -98,7 +98,7 @@ describe('withHotCodePush', () => {
     await prebuild(projectRoot);
 
     expect(readNativeFile(projectRoot, 'buildGradle')).toMatch(
-      /\n\napply from: new File\(\["node", "--print", "require\.resolve\('@hotcodepush\/react-native-code-push\/package\.json'\)"\]\.execute\(null, rootDir\)\.text\.trim\(\), "\.\.\/android\/hotcodepush\.gradle"\)\n$/,
+      /\n\napply from: \["node", "--print", "require\.resolve\('@hotcodepush\/react-native-code-push\/android\/hotcodepush\.gradle', \{ paths: \[require\.resolve\('@hotcodepush\/expo-ota-updates\/package\.json'\)\] \}\)"\]\.execute\(null, rootDir\)\.text\.trim\(\)\n$/,
     );
   });
 

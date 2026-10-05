@@ -6,6 +6,7 @@ import {
   withXcodeProject,
 } from 'expo/config-plugins';
 import type { XcodeProject } from 'xcode';
+import { buildReactNativePackageFileResolution } from './react-native-package';
 
 const BINARY_CREATE_PHASE_NAME = 'Create HotCodePush binary';
 
@@ -14,10 +15,16 @@ const BINARY_CREATE_PHASE_SCRIPT = [
   'set -e',
   '',
   '# hotcodepush: writes hotcodepush.json into the app and registers the binary',
-  'WITH_ENVIRONMENT="$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh"',
-  'HOTCODEPUSH_BINARY_CREATE="$REACT_NATIVE_PATH/../@hotcodepush/react-native-code-push/scripts/binary-create-xcode.sh"',
+  'if [ -f "$PODS_ROOT/../.xcode.env" ]; then',
+  '  . "$PODS_ROOT/../.xcode.env"',
+  'fi',
+  'if [ -f "$PODS_ROOT/../.xcode.env.local" ]; then',
+  '  . "$PODS_ROOT/../.xcode.env.local"',
+  'fi',
+  'export NODE_BINARY',
+  `HOTCODEPUSH_BINARY_CREATE="$("$NODE_BINARY" --print "${buildReactNativePackageFileResolution('scripts/binary-create-xcode.sh')}")"`,
   '',
-  '/bin/sh -c "$WITH_ENVIRONMENT $HOTCODEPUSH_BINARY_CREATE"',
+  '"$HOTCODEPUSH_BINARY_CREATE"',
   '',
 ].join('\\n');
 

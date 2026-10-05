@@ -1,5 +1,6 @@
 import type { ConfigPlugin } from 'expo/config-plugins';
 import { withAppBuildGradle, withMainApplication } from 'expo/config-plugins';
+import { buildReactNativePackageFileResolution } from './react-native-package';
 
 const EXPO_REACT_HOST_CALL = 'ExpoReactHostFactory.getDefaultReactHost(';
 
@@ -7,8 +8,8 @@ const EXPO_REACT_HOST_IMPORT = 'import expo.modules.ExpoReactHostFactory';
 
 const GRADLE_FILE_NAME = 'hotcodepush.gradle';
 
-// resolved through Node at build time, so it finds the package wherever `node_modules` lies
-const GRADLE_FILE_APPLY_LINE = `apply from: new File(["node", "--print", "require.resolve('@hotcodepush/react-native-code-push/package.json')"].execute(null, rootDir).text.trim(), "../android/${GRADLE_FILE_NAME}")`;
+// Node resolves the file when Gradle evaluates the build file
+const GRADLE_FILE_APPLY_LINE = `apply from: ["node", "--print", "${buildReactNativePackageFileResolution(`android/${GRADLE_FILE_NAME}`)}"].execute(null, rootDir).text.trim()`;
 
 const REACT_HOST_CALL = 'HotCodePushReactHost.getDefaultReactHost(';
 
