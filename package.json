@@ -1,0 +1,71 @@
+{
+  "name": "@hotcodepush/expo-ota-updates",
+  "version": "0.0.0",
+  "description": "Expo OTA updates by HotCodePush: the config plugin that wires over-the-air updates into your Expo app",
+  "license": "MIT",
+  "author": "Genz IT Solutions GmbH",
+  "homepage": "https://hotcodepush.com/expo-ota-updates",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hotcodepush-team/expo-ota-updates.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hotcodepush-team/expo-ota-updates/issues"
+  },
+  "keywords": [
+    "expo",
+    "expo-updates",
+    "config plugin",
+    "react-native",
+    "code push",
+    "live updates",
+    "ota updates",
+    "over-the-air updates",
+    "hot code push"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "react-native": "src/index.ts",
+  "files": [
+    "app.plugin.js",
+    "dist/",
+    "src/",
+    "!src/**/*.test.ts",
+    "!src/**/fixtures/"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc --project tsconfig.build.json",
+    "clean": "rimraf ./dist",
+    "fmt": "eslint . --fix && prettier --write .",
+    "lint": "eslint . && prettier --check .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@hotcodepush/react-native-code-push": "https://pkg.pr.new/hotcodepush-team/react-native-code-push/@hotcodepush/react-native-code-push@21b0474"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.19.0",
+    "@types/xcode": "3.0.0",
+    "eslint": "10.11.0",
+    "eslint-import-resolver-typescript": "4.4.5",
+    "eslint-plugin-import-x": "4.17.1",
+    "expo": "55.0.31",
+    "pkg-pr-new": "0.0.88",
+    "prettier": "3.9.8",
+    "react": "19.2.0",
+    "react-native": "0.83.10",
+    "rimraf": "6.1.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.1"
+  },
+  "peerDependencies": {
+    "expo": ">=55.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
