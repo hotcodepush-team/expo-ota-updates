@@ -17,11 +17,11 @@ import {
  */
 const withHotCodePush: ConfigPlugin = config =>
   withPlugins(config, [
-    withBinaryCreatePhase,
-    withServedBundleUrl,
-    withProtocolPod,
     withBinaryCreateGradleFile,
+    withBinaryCreatePhase,
+    withProtocolPod,
     withServedBundleReactHost,
+    withServedBundleUrl,
   ]);
 
 export default withHotCodePush;

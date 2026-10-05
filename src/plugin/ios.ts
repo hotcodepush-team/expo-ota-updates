@@ -10,6 +10,8 @@ import { buildReactNativePackageFileResolution } from './react-native-package';
 
 const BINARY_CREATE_PHASE_NAME = 'Create HotCodePush binary';
 
+const BINARY_CREATE_SCRIPT_NAME = 'binary-create-xcode.sh';
+
 // the lines of the phase as a pbxproj string carries them, the line breaks escaped
 const BINARY_CREATE_PHASE_SCRIPT = [
   'set -e',
@@ -22,13 +24,11 @@ const BINARY_CREATE_PHASE_SCRIPT = [
   '  . "$PODS_ROOT/../.xcode.env.local"',
   'fi',
   'export NODE_BINARY',
-  `HOTCODEPUSH_BINARY_CREATE="$("$NODE_BINARY" --print "${buildReactNativePackageFileResolution('scripts/binary-create-xcode.sh')}")"`,
+  `HOTCODEPUSH_BINARY_CREATE="$("$NODE_BINARY" --print "${buildReactNativePackageFileResolution(`scripts/${BINARY_CREATE_SCRIPT_NAME}`)}")"`,
   '',
   '"$HOTCODEPUSH_BINARY_CREATE"',
   '',
 ].join('\\n');
-
-const BINARY_CREATE_SCRIPT_NAME = 'binary-create-xcode.sh';
 
 const BUNDLE_URL_CALL = 'HotCodePush.bundleURL()';
 
@@ -56,18 +56,6 @@ export const withBinaryCreatePhase: ConfigPlugin = config =>
   });
 
 /**
- * A release build's `bundleURL()` returns the bundle the SDK serves in place of the embedded `main.jsbundle`;
- * the debug build's Metro line stays as it is.
- */
-export const withServedBundleUrl: ConfigPlugin = config =>
-  withAppDelegate(config, appDelegateConfig => {
-    appDelegateConfig.modResults.contents = addServedBundleUrl(
-      appDelegateConfig.modResults.contents,
-    );
-    return appDelegateConfig;
-  });
-
-/**
  * Until `HotCodePushProtocol` is published, the Podfile pins the pod at the commit the installed React Native package
  * names in its `package.json`; the pin falls away at publish.
  */
@@ -77,6 +65,18 @@ export const withProtocolPod: ConfigPlugin = config =>
       podfileConfig.modResults.contents,
     );
     return podfileConfig;
+  });
+
+/**
+ * A release build's `bundleURL()` returns the bundle the SDK serves in place of the embedded `main.jsbundle`;
+ * the debug build's Metro line stays as it is.
+ */
+export const withServedBundleUrl: ConfigPlugin = config =>
+  withAppDelegate(config, appDelegateConfig => {
+    appDelegateConfig.modResults.contents = addServedBundleUrl(
+      appDelegateConfig.modResults.contents,
+    );
+    return appDelegateConfig;
   });
 
 function addBinaryCreatePhase(project: XcodeProject): void {
