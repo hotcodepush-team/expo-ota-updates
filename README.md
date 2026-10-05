@@ -25,7 +25,15 @@ Then list the plugin in the app config:
 
 `init` adds the entry to `app.config.json` where the project has one, otherwise to `app.json`. In a project whose app config is code, such as `app.config.ts`, or whose JSON config the CLI cannot parse, `init` edits no app config and names the entry for you to add.
 
-The package supports Expo SDK 55 and later, iOS 15.1 and Android 7.0 (API 24).
+The package supports the Expo SDKs it is proven on. Its peer range on `expo` ends at the newest of them, and a release that proves a newer SDK widens it.
+
+| Expo SDK | React Native | iOS  | Android      |
+| -------- | ------------ | ---- | ------------ |
+| 55       | 0.83         | 15.1 | 7.0 (API 24) |
+| 56       | 0.85         | 16.4 | 7.0 (API 24) |
+| 57       | 0.86         | 16.4 | 7.0 (API 24) |
+
+The iOS and Android floors are Expo's own for each SDK.
 
 Generate the native projects:
 

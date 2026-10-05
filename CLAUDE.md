@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 The HotCodePush Expo SDK: `@hotcodepush/expo-ota-updates`, the config plugin that wires `@hotcodepush/react-native-code-push` into an Expo app at prebuild and re-exports its API.
-Stack: TypeScript, Expo's config plugins from `expo/config-plugins`, Vitest; Expo SDK 55 and newer.
+Stack: TypeScript, Expo's config plugins from `expo/config-plugins`, Vitest; Expo SDK 55 to 57, the range the peer dependency names.
 
 This package holds no native code and none of the SDK's behaviour: both are the React Native package's, in `react-native-code-push`, pinned to a commit in `package.json`.
 A change of the native code or of the API is a change there and a bump of that pin here.
@@ -9,14 +9,15 @@ A change of the native code or of the API is a change there and a bump of that p
 ## Layout
 
 ```
-app.plugin.js                        the plugin as Expo resolves it: `dist/plugin`
-src/index.ts                         the API, one re-export of `@hotcodepush/react-native-code-push`
-src/plugin/index.ts                  `withHotCodePush`, the five plugins in alphabetical order
-src/plugin/ios.ts                    the Xcode phase, the AppDelegate's bundle URL, the Podfile's pod
-src/plugin/android.ts                the Gradle line, `MainApplication.kt`'s React host
-src/plugin/react-native-package.ts   the Node expression that resolves a file of the React Native package through this one
-src/plugin/index.test.ts             the plugin compiled over the fixture: every edit, every error, the second prebuild
-src/plugin/fixtures/expo-sdk-55/     the native files `expo prebuild` generates for SDK 55; outside ESLint and Prettier
+app.plugin.js                                the plugin as Expo resolves it: `dist/plugin`
+src/index.ts                                 the API, one re-export of `@hotcodepush/react-native-code-push`
+src/plugin/index.ts                          `withHotCodePush`, the five plugins in alphabetical order
+src/plugin/ios.ts                            the Xcode phase, the AppDelegate's bundle URL, the Podfile's pod
+src/plugin/android.ts                        the Gradle line, `MainApplication.kt`'s React host
+src/plugin/react-native-package.ts           the Node expression that resolves a file of the React Native package through this one
+src/plugin/index.test.ts                     the plugin compiled over the fixture: every edit, every error, the second prebuild
+src/plugin/expo-react-host-factory.test.ts   each SDK's `ExpoReactHostFactory.kt` against the one `HotCodePushReactHost` was written against
+src/plugin/fixtures/expo-sdk-{55,56,57}/     the native files `expo prebuild` generates for each SDK, and Expo's `ExpoReactHostFactory.kt` of that SDK; outside ESLint and Prettier
 ```
 
 ## What the plugin edits
@@ -55,7 +56,8 @@ The demo and the CLI's `init` each pin a commit of this package.
 - **An edit that finds no place throws**, and the message names the file and what it lacks: no bundling phase, no embedded `main.jsbundle` returned from `bundleURL()`, no `use_native_modules!` line, a build file that is not Groovy, no Expo React host. Never a silent skip: the error fails the prebuild.
 - **A file of the React Native package is resolved through this package**, by `buildReactNativePackageFileResolution`: an isolated install, pnpm's by default, keeps the React Native package out of the app's `node_modules`. No path into `node_modules` is written into a native file.
 - **The API is the React Native package's.** `src/index.ts` re-exports it and adds nothing; an app imports from this package.
-- **Every edit and every error has a test** in `src/plugin/index.test.ts`, run over a copy of the fixture, the output of `expo-template-bare-minimum` 55.0.43.
+- **Every edit and every error has a test** in `src/plugin/index.test.ts`, run over a copy of each fixture, the output of `expo-template-bare-minimum` for that SDK (55.0.43, 56.0.37, 57.0.28).
+- **A new Expo SDK joins in one commit:** its template's files as a fixture, Expo's host factory beside it, the peer range's upper bound and the README's table row; the lifecycle runs on devices on that SDK before the range moves.
 - **No Expo Go, no `expo-updates` beside it.** The SDK's native code needs a development build or a release build, and nothing here handles an enabled `expo-updates`, which decides the app's bundle itself.
 
 ## Agent workspace
