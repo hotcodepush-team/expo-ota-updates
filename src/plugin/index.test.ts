@@ -79,6 +79,21 @@ describe('withHotCodePush', () => {
     );
   });
 
+  it('should pin the protocol pod when the Podfile names it outside a pod line', async () => {
+    editNativeFile(projectRoot, 'podfile', podfile =>
+      podfile.replace(
+        'post_install do |installer|',
+        "post_install do |installer|\n    # HotCodePushProtocol's resource bundle",
+      ),
+    );
+
+    await prebuild(projectRoot);
+
+    expect(readNativeFile(projectRoot, 'podfile')).toContain(
+      "  pod 'HotCodePushProtocol', :git =>",
+    );
+  });
+
   it("should apply the React Native package's Gradle file at the end of the app's build file", async () => {
     await prebuild(projectRoot);
 

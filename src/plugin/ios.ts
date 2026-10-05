@@ -32,6 +32,8 @@ const EMBEDDED_BUNDLE_URL_CALL =
 
 const PROTOCOL_POD_NAME = 'HotCodePushProtocol';
 
+const PROTOCOL_POD_LINE_START = `pod '${PROTOCOL_POD_NAME}'`;
+
 const PROTOCOL_POD_REPOSITORY_URL =
   'https://github.com/hotcodepush-team/protocol-ios.git';
 
@@ -96,7 +98,7 @@ function addBinaryCreatePhase(project: XcodeProject): void {
 }
 
 function addProtocolPod(podfile: string): string {
-  if (podfile.includes(PROTOCOL_POD_NAME)) {
+  if (podfile.includes(PROTOCOL_POD_LINE_START)) {
     return podfile;
   }
   const nativeModulesLine = podfile
@@ -111,7 +113,7 @@ function addProtocolPod(podfile: string): string {
   const commit = reactNativePackage.hotcodepush.protocolIos;
   return podfile.replace(
     nativeModulesLine,
-    `${nativeModulesLine}\n${indentation}pod '${PROTOCOL_POD_NAME}', :git => '${PROTOCOL_POD_REPOSITORY_URL}', :commit => '${commit}'`,
+    `${nativeModulesLine}\n${indentation}${PROTOCOL_POD_LINE_START}, :git => '${PROTOCOL_POD_REPOSITORY_URL}', :commit => '${commit}'`,
   );
 }
 
