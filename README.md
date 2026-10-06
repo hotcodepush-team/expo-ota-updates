@@ -45,7 +45,7 @@ At prebuild the plugin wires the build step and the served bundle into the nativ
 
 The SDK reads `hotcodepush.json` from the app's resources, which the build step, the CLI's `binary create`, writes on every native build that bundles the JavaScript. The build step also creates the store build's binary in HotCodePush, so it needs a login, `npx hotcodepush login`, or `HOTCODEPUSH_TOKEN`. It runs inside the native build, so a cloud build, such as EAS Build, needs `HOTCODEPUSH_TOKEN` in its environment. Without a token, the build fails with `E_NOT_LOGGED_IN` where `CI` is set, and elsewhere it goes on without a channel and takes no updates. `HOTCODEPUSH_OFFLINE=1` builds without asking the API, also where `CI` is set, for a build that is never shipped.
 
-The native cores are the pod `HotCodePushCore` and the Android library [core-android](https://github.com/hotcodepush-team/core-android), each pinned to a commit until it is published. The plugin pins the pod in the Podfile, and the Gradle file it applies adds JitPack, which builds the pinned commit, to the app's repositories.
+The native cores are the pod `HotCodePushCore` and the Android library [core-android](https://github.com/hotcodepush-team/core-android), each pinned to a commit until it is published. The plugin pins the pod in the Podfile, and the Gradle file it applies adds core-android's `maven` branch, where the pinned commit is published, to the app's repositories.
 
 The app runs in a build of your own, a development build or a release build. Expo Go does not contain the SDK's native code.
 
