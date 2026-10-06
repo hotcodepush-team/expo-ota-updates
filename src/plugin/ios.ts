@@ -34,15 +34,15 @@ const BUNDLE_URL_CALL = 'HotCodePush.bundleURL()';
 
 const BUNDLING_PHASE_NAME = 'Bundle React Native code and images';
 
+const CORE_POD_NAME = 'HotCodePushCore';
+
+const CORE_POD_LINE_START = `pod '${CORE_POD_NAME}'`;
+
+const CORE_POD_REPOSITORY_URL =
+  'https://github.com/hotcodepush-team/core-ios.git';
+
 const EMBEDDED_BUNDLE_URL_CALL =
   'Bundle.main.url(forResource: "main", withExtension: "jsbundle")';
-
-const PROTOCOL_POD_NAME = 'HotCodePushProtocol';
-
-const PROTOCOL_POD_LINE_START = `pod '${PROTOCOL_POD_NAME}'`;
-
-const PROTOCOL_POD_REPOSITORY_URL =
-  'https://github.com/hotcodepush-team/protocol-ios.git';
 
 const SWIFT_MODULE_IMPORT = 'import HotcodepushReactNativeCodePush';
 
@@ -56,12 +56,12 @@ export const withBinaryCreatePhase: ConfigPlugin = config =>
   });
 
 /**
- * Until `HotCodePushProtocol` is published, the Podfile pins the pod at the commit the installed React Native package
+ * Until `HotCodePushCore` is published, the Podfile pins the pod at the commit the installed React Native package
  * names in its `package.json`; the pin falls away at publish.
  */
-export const withProtocolPod: ConfigPlugin = config =>
+export const withCorePod: ConfigPlugin = config =>
   withPodfile(config, podfileConfig => {
-    podfileConfig.modResults.contents = addProtocolPod(
+    podfileConfig.modResults.contents = addCorePod(
       podfileConfig.modResults.contents,
     );
     return podfileConfig;
@@ -107,8 +107,8 @@ function addBinaryCreatePhase(project: XcodeProject): void {
   }
 }
 
-function addProtocolPod(podfile: string): string {
-  if (podfile.includes(PROTOCOL_POD_LINE_START)) {
+function addCorePod(podfile: string): string {
+  if (podfile.includes(CORE_POD_LINE_START)) {
     return podfile;
   }
   const nativeModulesLine = podfile
@@ -116,14 +116,14 @@ function addProtocolPod(podfile: string): string {
     .find(line => line.includes('use_native_modules!'));
   if (nativeModulesLine === undefined) {
     throw new Error(
-      `The Podfile has no use_native_modules! line to add the ${PROTOCOL_POD_NAME} pod after.`,
+      `The Podfile has no use_native_modules! line to add the ${CORE_POD_NAME} pod after.`,
     );
   }
   const indentation = /^\s*/.exec(nativeModulesLine)?.[0] ?? '';
-  const commit = reactNativePackage.hotcodepush.protocolIos;
+  const commit = reactNativePackage.hotcodepush.coreIos;
   return podfile.replace(
     nativeModulesLine,
-    `${nativeModulesLine}\n${indentation}${PROTOCOL_POD_LINE_START}, :git => '${PROTOCOL_POD_REPOSITORY_URL}', :commit => '${commit}'`,
+    `${nativeModulesLine}\n${indentation}${CORE_POD_LINE_START}, :git => '${CORE_POD_REPOSITORY_URL}', :commit => '${commit}'`,
   );
 }
 

@@ -86,26 +86,26 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     );
   });
 
-  it('should pin the protocol pod at the commit the React Native package names', async () => {
+  it('should pin the core pod at the commit the React Native package names', async () => {
     await prebuild(projectRoot);
 
     expect(readNativeFile(projectRoot, 'podfile')).toContain(
-      `  config = use_native_modules!(config_command)\n  pod 'HotCodePushProtocol', :git => 'https://github.com/hotcodepush-team/protocol-ios.git', :commit => '${reactNativePackage.hotcodepush.protocolIos}'\n`,
+      `  config = use_native_modules!(config_command)\n  pod 'HotCodePushCore', :git => 'https://github.com/hotcodepush-team/core-ios.git', :commit => '${reactNativePackage.hotcodepush.coreIos}'\n`,
     );
   });
 
-  it('should pin the protocol pod when the Podfile names it outside a pod line', async () => {
+  it('should pin the core pod when the Podfile names it outside a pod line', async () => {
     editNativeFile(projectRoot, 'podfile', podfile =>
       podfile.replace(
         'post_install do |installer|',
-        "post_install do |installer|\n    # HotCodePushProtocol's resource bundle",
+        "post_install do |installer|\n    # HotCodePushCore's resource bundle",
       ),
     );
 
     await prebuild(projectRoot);
 
     expect(readNativeFile(projectRoot, 'podfile')).toContain(
-      "  pod 'HotCodePushProtocol', :git =>",
+      "  pod 'HotCodePushCore', :git =>",
     );
   });
 
@@ -165,7 +165,7 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     );
 
     await expect(prebuild(projectRoot)).rejects.toThrow(
-      'The Podfile has no use_native_modules! line to add the HotCodePushProtocol pod after.',
+      'The Podfile has no use_native_modules! line to add the HotCodePushCore pod after.',
     );
   });
 
