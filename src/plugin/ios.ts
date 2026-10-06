@@ -89,13 +89,16 @@ function addBinaryCreatePhase(project: XcodeProject): void {
       `The Xcode project has no "${BUNDLING_PHASE_NAME}" phase to run binary create after.`,
     );
   }
-  project.addBuildPhase(
+  const { buildPhase } = project.addBuildPhase(
     [],
     'PBXShellScriptBuildPhase',
     BINARY_CREATE_PHASE_NAME,
     target.uuid,
     { shellPath: '/bin/sh', shellScript: BINARY_CREATE_PHASE_SCRIPT },
   );
+  // binary create writes hotcodepush.json, which carries the build's time, on every build; a phase without outputs
+  // that is not marked so makes Xcode warn
+  buildPhase.alwaysOutOfDate = 1;
   // the package appends the phase to the target; binary create belongs right after the bundling it reads
   const { buildPhases } = target;
   const binaryCreatePhase = buildPhases.pop();

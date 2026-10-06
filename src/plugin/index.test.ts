@@ -61,6 +61,18 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     );
   });
 
+  it('should mark the binary create phase to run on every build', async () => {
+    await prebuild(projectRoot);
+
+    const project = IOSConfig.XcodeUtils.getPbxproj(projectRoot);
+    expect(
+      project.buildPhaseObject(
+        'PBXShellScriptBuildPhase',
+        'Create HotCodePush binary',
+      ),
+    ).toMatchObject({ alwaysOutOfDate: 1 });
+  });
+
   it("should return the served bundle from a release build's bundle URL", async () => {
     await prebuild(projectRoot);
 
