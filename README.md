@@ -43,7 +43,7 @@ npx expo prebuild
 
 At prebuild the plugin wires the build step and the served bundle into the native projects: the native builds run the build step after they bundle the JavaScript, and the app runs the bundle the SDK serves. Every prebuild applies the plugin, and an edit that is already in a file is left as it is. A project prebuilt with an older version of the package therefore needs `npx expo prebuild --clean` once, which regenerates the native projects. Where the plugin does not recognise a file of Expo's template, the prebuild fails with a message that names the file and what it lacks.
 
-The SDK reads `hotcodepush.json` from the app's resources, which the build step, the CLI's `binary create`, writes on every native build that bundles the JavaScript. The build step also creates the store build's binary in HotCodePush, so it needs a login, `npx hotcodepush login`, or `HOTCODEPUSH_TOKEN`. It runs inside the native build, so a cloud build, such as EAS Build, needs `HOTCODEPUSH_TOKEN` in its environment. Without a token, the build fails with `E_NOT_LOGGED_IN` where `CI` is set, and elsewhere it goes on without a channel and takes no updates. `HOTCODEPUSH_OFFLINE=1` builds without asking the API, also where `CI` is set, for a build that is never shipped.
+The SDK reads `hotcodepush.json` from the app's resources, which the build step, the CLI's `binary create`, writes on every native build. A build that bundles the JavaScript, a release build, also creates the store build's binary in HotCodePush, so it needs a login, `npx hotcodepush login`, or `HOTCODEPUSH_TOKEN`. It runs inside the native build, so a cloud build, such as EAS Build, needs `HOTCODEPUSH_TOKEN` in its environment. Without a token, the build fails with `E_NOT_LOGGED_IN` where `CI` is set, and elsewhere it goes on without a channel and takes no updates. `HOTCODEPUSH_OFFLINE=1` builds without asking the API, also where `CI` is set, for a build that is never shipped. A debug build, where the development server serves the JavaScript, gets the file without an embedded bundle, asks nothing and needs no login.
 
 The native cores are the pod `HotCodePushCore` and the Android library [core-android](https://github.com/hotcodepush-team/core-android), each pinned to a commit until it is published. The plugin pins the pod in the Podfile, and the Gradle file it applies adds core-android's `maven` branch, where the pinned commit is published, to the app's repositories.
 
@@ -53,7 +53,7 @@ Expo's own autolinking is required. The React Native module is a dependency of t
 
 Do not use the SDK beside an enabled `expo-updates`: each of the two decides which bundle the app runs. Remove `expo-updates` when you adopt the SDK.
 
-Live updates are off in a debug build, where the development server serves the JavaScript. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`.
+Live updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `DEBUG_BUILD`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`.
 
 ## Usage
 

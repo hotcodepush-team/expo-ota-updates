@@ -15,7 +15,7 @@ src/plugin/index.ts                          `withHotCodePush`, the five plugins
 src/plugin/ios.ts                            the Xcode phase, the AppDelegate's bundle URL, the Podfile's pod
 src/plugin/android.ts                        the Gradle line, `MainApplication.kt`'s React host
 src/plugin/react-native-package.ts           the Node expression that resolves a file of the React Native package through this one
-src/plugin/index.test.ts                     the plugin compiled over the fixture: every edit, every error, the second prebuild
+src/plugin/index.test.ts                     the plugin compiled over each fixture: every edit, every error, the second prebuild
 src/plugin/expo-react-host-factory.test.ts   each SDK's `ExpoReactHostFactory.kt` against the one `HotCodePushReactHost` was written against
 src/plugin/fixtures/expo-sdk-{55,56,57}/     the native files `expo prebuild` generates for each SDK, and Expo's `ExpoReactHostFactory.kt` of that SDK; outside ESLint and Prettier
 ```
@@ -24,7 +24,7 @@ src/plugin/fixtures/expo-sdk-{55,56,57}/     the native files `expo prebuild` ge
 
 `withHotCodePush` wires an Expo project at prebuild as `npx hotcodepush init` wires a bare React Native one, in five plugins:
 
-- **`withBinaryCreatePhase`, the Xcode project.** The target that has "Bundle React Native code and images" gets the phase "Create HotCodePush binary" right after it. The phase sources `.xcode.env` and `.xcode.env.local`, exports `NODE_BINARY` and runs the React Native package's `scripts/binary-create-xcode.sh`, the build step.
+- **`withBinaryCreatePhase`, the Xcode project.** The target that has "Bundle React Native code and images" gets the phase "Create HotCodePush binary" right after it. The phase sources `.xcode.env` and `.xcode.env.local`, exports `NODE_BINARY` and runs the React Native package's `scripts/binary-create-xcode.sh`, the build step, on every build, since it declares no outputs for Xcode to track; in a debug build the step writes the file without an embedded bundle and asks the API nothing.
 - **`withServedBundleUrl`, `AppDelegate.swift`.** `bundleURL()` returns `HotCodePush.bundleURL()` where it returned the embedded `main.jsbundle`, and the file imports `HotcodepushReactNativeCodePush`. The debug build's Metro line stays.
 - **`withCorePod`, the Podfile.** A `pod 'HotCodePushCore'` line follows the `use_native_modules!` line, with `:git` and the `:commit` the installed React Native package names under `hotcodepush.coreIos`. The pod is not published yet; the edit goes when it is.
 - **`withBinaryCreateGradleFile`, `android/app/build.gradle`.** One `apply from` line at the end applies the React Native package's `android/hotcodepush.gradle`, whose task runs the build step.
@@ -36,7 +36,7 @@ src/plugin/fixtures/expo-sdk-{55,56,57}/     the native files `expo prebuild` ge
 | ------------------- | -------------------------------------------------------- |
 | `npm run lint`      | ESLint and Prettier                                      |
 | `npm run typecheck` | TypeScript                                               |
-| `npm test`          | Vitest, the plugin over the fixture                      |
+| `npm test`          | Vitest, the plugin over the three fixtures               |
 | `npm run build`     | the TypeScript into `dist/`, which `app.plugin.js` loads |
 | `npm run verify`    | the four above, in that order                            |
 
