@@ -53,7 +53,7 @@ Expo's own autolinking is required. The React Native module is a dependency of t
 
 Do not use the SDK beside an enabled `expo-updates`: each of the two decides which bundle the app runs. Remove `expo-updates` when you adopt the SDK.
 
-Live updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `DEBUG_BUILD`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`.
+Live updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `BUILD_DEBUG`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`.
 
 ## Usage
 
