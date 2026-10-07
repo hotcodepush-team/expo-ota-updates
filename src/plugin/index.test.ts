@@ -73,6 +73,14 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     ).toMatchObject({ alwaysOutOfDate: 1 });
   });
 
+  it("should declare the processed Info.plist as the binary create phase's input, since the build step reads the version and build from it", async () => {
+    await prebuild(projectRoot);
+
+    expect(readNativeFile(projectRoot, 'pbxproj')).toMatch(
+      /\/\* Create HotCodePush binary \*\/ = \{[^}]*\binputPaths = \(\n\t+"\$\(TARGET_BUILD_DIR\)\/\$\(INFOPLIST_PATH\)",\n\t+\);/,
+    );
+  });
+
   it("should return the served bundle from a release build's bundle URL", async () => {
     await prebuild(projectRoot);
 

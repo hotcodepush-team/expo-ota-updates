@@ -44,6 +44,10 @@ const CORE_POD_REPOSITORY_URL =
 const EMBEDDED_BUNDLE_URL_CALL =
   'Bundle.main.url(forResource: "main", withExtension: "jsbundle")';
 
+// the build step reads the version and build from the built app's processed Info.plist: declared as the phase's input,
+// Xcode processes the plist before it runs the phase
+const INFO_PLIST_INPUT_PATH = '"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)"';
+
 const SWIFT_MODULE_IMPORT = 'import HotcodepushReactNativeCodePush';
 
 /**
@@ -94,7 +98,11 @@ function addBinaryCreatePhase(project: XcodeProject): void {
     'PBXShellScriptBuildPhase',
     BINARY_CREATE_PHASE_NAME,
     target.uuid,
-    { shellPath: '/bin/sh', shellScript: BINARY_CREATE_PHASE_SCRIPT },
+    {
+      inputPaths: [INFO_PLIST_INPUT_PATH],
+      shellPath: '/bin/sh',
+      shellScript: BINARY_CREATE_PHASE_SCRIPT,
+    },
   );
   // binary create writes hotcodepush.json, which carries the build's time, on every build; a phase without outputs
   // that is not marked so makes Xcode warn
