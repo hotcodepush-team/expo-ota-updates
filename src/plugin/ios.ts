@@ -61,11 +61,11 @@ export const withBinaryCreatePhase: ConfigPlugin = config =>
 
 /**
  * Until `HotCodePushCore` is published, the Podfile pins the pod at the commit the installed React Native package
- * names in its `package.json`; the pin falls away at publish.
+ * names in its `package.json`, and every prebuild moves the pin to that commit; the pin falls away at publish.
  */
 export const withCorePod: ConfigPlugin = config =>
   withPodfile(config, podfileConfig => {
-    podfileConfig.modResults.contents = addCorePod(
+    podfileConfig.modResults.contents = pinCorePod(
       podfileConfig.modResults.contents,
     );
     return podfileConfig;
@@ -115,26 +115,6 @@ function addBinaryCreatePhase(project: XcodeProject): void {
   }
 }
 
-function addCorePod(podfile: string): string {
-  if (podfile.includes(CORE_POD_LINE_START)) {
-    return podfile;
-  }
-  const nativeModulesLine = podfile
-    .split('\n')
-    .find(line => line.includes('use_native_modules!'));
-  if (nativeModulesLine === undefined) {
-    throw new Error(
-      `The Podfile has no use_native_modules! line to add the ${CORE_POD_NAME} pod after.`,
-    );
-  }
-  const indentation = /^\s*/.exec(nativeModulesLine)?.[0] ?? '';
-  const commit = reactNativePackage.hotcodepush.coreIos;
-  return podfile.replace(
-    nativeModulesLine,
-    `${nativeModulesLine}\n${indentation}${CORE_POD_LINE_START}, :git => '${CORE_POD_REPOSITORY_URL}', :commit => '${commit}'`,
-  );
-}
-
 function addServedBundleUrl(appDelegate: string): string {
   if (appDelegate.includes(BUNDLE_URL_CALL)) {
     return appDelegate;
@@ -145,6 +125,15 @@ function addServedBundleUrl(appDelegate: string): string {
     );
   }
   return `${SWIFT_MODULE_IMPORT}\n${appDelegate.replace(EMBEDDED_BUNDLE_URL_CALL, BUNDLE_URL_CALL)}`;
+}
+
+/**
+ * The pod line at the commit the installed React Native package names, indented as the line it replaces or follows.
+ */
+function buildCorePodLine(neighbouringLine: string): string {
+  const indentation = /^\s*/.exec(neighbouringLine)?.[0] ?? '';
+  const commit = reactNativePackage.hotcodepush.coreIos;
+  return `${indentation}${CORE_POD_LINE_START}, :git => '${CORE_POD_REPOSITORY_URL}', :commit => '${commit}'`;
 }
 
 /**
@@ -183,5 +172,31 @@ function hasBinaryCreatePhase(project: XcodeProject): boolean {
     phase =>
       typeof phase === 'object' &&
       String(phase.shellScript).includes(BINARY_CREATE_SCRIPT_NAME),
+  );
+}
+
+/**
+ * The pod line is recognised by the pod's name and rewritten, so a prebuilt project follows the React Native package
+ * the app installs; without one, the line follows `use_native_modules!`.
+ */
+function pinCorePod(podfile: string): string {
+  const lines = podfile.split('\n');
+  const corePodLine = lines.find(line =>
+    line.trimStart().startsWith(CORE_POD_LINE_START),
+  );
+  if (corePodLine !== undefined) {
+    return podfile.replace(corePodLine, buildCorePodLine(corePodLine));
+  }
+  const nativeModulesLine = lines.find(line =>
+    line.includes('use_native_modules!'),
+  );
+  if (nativeModulesLine === undefined) {
+    throw new Error(
+      `The Podfile has no use_native_modules! line to add the ${CORE_POD_NAME} pod after.`,
+    );
+  }
+  return podfile.replace(
+    nativeModulesLine,
+    `${nativeModulesLine}\n${buildCorePodLine(nativeModulesLine)}`,
   );
 }

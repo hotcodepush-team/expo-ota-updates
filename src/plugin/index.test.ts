@@ -117,6 +117,24 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     );
   });
 
+  it('should move the core pod to the commit the React Native package names when prebuild runs over an older pin', async () => {
+    await prebuild(projectRoot);
+    editNativeFile(projectRoot, 'podfile', podfile =>
+      podfile.replace(
+        reactNativePackage.hotcodepush.coreIos,
+        'c9b5266000000000000000000000000000000000',
+      ),
+    );
+
+    await prebuild(projectRoot);
+
+    const podfile = readNativeFile(projectRoot, 'podfile');
+    expect(podfile).toContain(
+      `  config = use_native_modules!(config_command)\n  pod 'HotCodePushCore', :git => 'https://github.com/hotcodepush-team/core-ios.git', :commit => '${reactNativePackage.hotcodepush.coreIos}'\n`,
+    );
+    expect(podfile.match(/pod 'HotCodePushCore'/g)).toHaveLength(1);
+  });
+
   it("should apply the React Native package's Gradle file at the end of the app's build file", async () => {
     await prebuild(projectRoot);
 
