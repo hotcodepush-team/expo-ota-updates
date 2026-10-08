@@ -16,7 +16,7 @@ const BINARY_CREATE_SCRIPT_NAME = 'binary-create-xcode.sh';
 const BINARY_CREATE_PHASE_SCRIPT = [
   'set -e',
   '',
-  '# hotcodepush: writes hotcodepush.json into the app and registers the binary',
+  '# hotcodepush: writes hotcodepush.json into the app and, in a store build, creates the binary',
   'if [ -f "$PODS_ROOT/../.xcode.env" ]; then',
   '  . "$PODS_ROOT/../.xcode.env"',
   'fi',
@@ -51,7 +51,7 @@ const INFO_PLIST_INPUT_PATH = '"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)"';
 const SWIFT_MODULE_IMPORT = 'import HotcodepushReactNativeCodePush';
 
 /**
- * The app target runs binary create right after "Bundle React Native code and images", whose output it hashes.
+ * The app target runs the build step right after "Bundle React Native code and images", whose output it hashes.
  */
 export const withBinaryCreatePhase: ConfigPlugin = config =>
   withXcodeProject(config, xcodeConfig => {
@@ -104,10 +104,10 @@ function addBinaryCreatePhase(project: XcodeProject): void {
       shellScript: BINARY_CREATE_PHASE_SCRIPT,
     },
   );
-  // binary create writes hotcodepush.json, which carries the build's time, on every build; a phase without outputs
+  // the build step writes hotcodepush.json, which carries the build's time, on every build; a phase without outputs
   // that is not marked so makes Xcode warn
   buildPhase.alwaysOutOfDate = 1;
-  // the package appends the phase to the target; binary create belongs right after the bundling it reads
+  // the package appends the phase to the target; the build step belongs right after the bundling it reads
   const { buildPhases } = target;
   const binaryCreatePhase = buildPhases.pop();
   if (binaryCreatePhase !== undefined) {

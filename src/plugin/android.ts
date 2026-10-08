@@ -18,7 +18,7 @@ const REACT_HOST_IMPORT =
 
 /**
  * `app/build.gradle` applies the Gradle file the React Native package ships, which holds the task that runs
- * binary create: one line, so the logic lives in the package's file.
+ * the build step: one line, so the logic lives in the package's file.
  */
 export const withBinaryCreateGradleFile: ConfigPlugin = config =>
   withAppBuildGradle(config, gradleConfig => {
