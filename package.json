@@ -43,7 +43,7 @@
     "verify": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
-    "@hotcodepush/react-native-code-push": "https://pkg.pr.new/hotcodepush-team/react-native-code-push/@hotcodepush/react-native-code-push@f7512fe3c6b641e6350e2afa2cf4144f85cf2413"
+    "@hotcodepush/react-native-code-push": "https://pkg.pr.new/hotcodepush-team/react-native-code-push/@hotcodepush/react-native-code-push@0e0a90b2b3951ccc0ca50f8487b21f5b719a2925"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
