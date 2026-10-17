@@ -62,7 +62,9 @@ import { HotCodePush, useUpdates } from '@hotcodepush/expo-ota-updates';
 
 const result = await HotCodePush.sync();
 if (result.status === 'DOWNLOADED') {
-  console.log(`release #${result.release.number} applies at ${result.applyAt}`);
+  console.log(
+    `release #${result.release.number} applies at ${result.applyStrategy}`,
+  );
 }
 
 function ReleaseLabel() {
