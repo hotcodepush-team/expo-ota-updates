@@ -4,18 +4,20 @@ import {
   withBinaryCreateGradleFile,
   withServedBundleReactHost,
 } from './android';
+import { withEnabledExpoUpdatesRefused } from './expo-updates';
 import { withBinaryCreatePhase, withCorePod, withServedBundleUrl } from './ios';
 
 /**
  * Wires an Expo project at prebuild as `hotcodepush init` wires a bare React Native one: the build step runs binary
  * create after React Native bundles the JavaScript, and both native apps ask the SDK for the bundle they run.
- * Every edit is recognised on the next prebuild and left as it is.
+ * Every edit is recognised on the next prebuild and left as it is; an enabled expo-updates fails the prebuild.
  */
 const withHotCodePush: ConfigPlugin = config =>
   withPlugins(config, [
     withBinaryCreateGradleFile,
     withBinaryCreatePhase,
     withCorePod,
+    withEnabledExpoUpdatesRefused,
     withServedBundleReactHost,
     withServedBundleUrl,
   ]);

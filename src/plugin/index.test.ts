@@ -10,12 +10,20 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import reactNativePackage from '@hotcodepush/react-native-code-push/package.json';
 import type { ExpoConfig } from 'expo/config';
+import type { ModPlatform } from 'expo/config-plugins';
 import { compileModsAsync, IOSConfig } from 'expo/config-plugins';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import withHotCodePush from '.';
 
 // the native files `expo prebuild` generates per SDK, from expo-template-bare-minimum 55.0.43, 56.0.37 and 57.0.28
 const FIXTURE_NAMES = ['expo-sdk-55', 'expo-sdk-56', 'expo-sdk-57'];
+
+const ENABLED_EXPO_UPDATES_MESSAGE =
+  'HotCodePush and expo-updates cannot both serve updates. Set updates.enabled to false in your app config, or remove expo-updates.';
+
+const EXPO_UPDATES_VERSION = '~55.0.33';
+
+const PLATFORMS: ModPlatform[] = ['android', 'ios'];
 
 const NATIVE_FILE_PATHS = {
   appDelegate: 'ios/HelloWorld/AppDelegate.swift',
@@ -36,6 +44,7 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     cpSync(join(__dirname, 'fixtures', fixtureName), projectRoot, {
       recursive: true,
     });
+    writePackageJson(projectRoot, { name: 'hello-world' });
   });
 
   afterEach(() => {
@@ -216,18 +225,63 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
       "MainApplication.kt does not build its React host with Expo's ExpoReactHostFactory.getDefaultReactHost() to replace with HotCodePushReactHost.getDefaultReactHost().",
     );
   });
+
+  it.each(PLATFORMS)(
+    'should throw on %s when expo-updates is installed and updates.enabled is not false',
+    async platform => {
+      writePackageJson(projectRoot, {
+        dependencies: { 'expo-updates': EXPO_UPDATES_VERSION },
+      });
+
+      await expect(prebuild(projectRoot, {}, [platform])).rejects.toThrow(
+        ENABLED_EXPO_UPDATES_MESSAGE,
+      );
+    },
+  );
+
+  it('should throw when expo-updates is a dev dependency and updates.enabled is not false', async () => {
+    writePackageJson(projectRoot, {
+      devDependencies: { 'expo-updates': EXPO_UPDATES_VERSION },
+    });
+
+    await expect(prebuild(projectRoot)).rejects.toThrow(
+      ENABLED_EXPO_UPDATES_MESSAGE,
+    );
+  });
+
+  it('should prebuild when expo-updates is installed and updates.enabled is false', async () => {
+    writePackageJson(projectRoot, {
+      dependencies: { 'expo-updates': EXPO_UPDATES_VERSION },
+    });
+
+    await prebuild(projectRoot, { updates: { enabled: false } });
+
+    expect(readNativeFile(projectRoot, 'appDelegate')).toContain(
+      'return HotCodePush.bundleURL()',
+    );
+  });
+
+  it('should prebuild when updates.enabled is true and expo-updates is not installed', async () => {
+    await prebuild(projectRoot, { updates: { enabled: true } });
+
+    expect(readNativeFile(projectRoot, 'appDelegate')).toContain(
+      'return HotCodePush.bundleURL()',
+    );
+  });
 });
 
-async function prebuild(projectRoot: string): Promise<void> {
+async function prebuild(
+  projectRoot: string,
+  appConfig: Partial<ExpoConfig> = {},
+  platforms = PLATFORMS,
+): Promise<void> {
   const config: ExpoConfig = {
     _internal: { projectRoot },
     name: 'HelloWorld',
     slug: 'hello-world',
+    ...appConfig,
   };
-  await compileModsAsync(withHotCodePush(config), {
-    platforms: ['android', 'ios'],
-    projectRoot,
-  });
+  await compileModsAsync(withHotCodePush(config), { platforms, projectRoot });
 }
 
 function editNativeFile(
@@ -249,4 +303,8 @@ function readNativeFiles(projectRoot: string): string[] {
   return Object.values(NATIVE_FILE_PATHS).map(path =>
     readFileSync(join(projectRoot, path), 'utf8'),
   );
+}
+
+function writePackageJson(projectRoot: string, packageJson: object): void {
+  writeFileSync(join(projectRoot, 'package.json'), JSON.stringify(packageJson));
 }
