@@ -47,11 +47,11 @@ The SDK reads `hotcodepush.json` from the app's resources, which the build step 
 
 The native cores are the pod `HotCodePushCore` and the Android library [core-android](https://github.com/hotcodepush-team/core-android), each pinned to a commit until it is published. The plugin pins the pod in the Podfile, and the Gradle file it applies adds core-android's `maven` branch, where the pinned commit is published, to the app's repositories.
 
-The app runs in a build of your own, a development build or a release build. Expo Go does not contain the SDK's native code.
+The app runs in a build of your own, a development build or a release build. Expo Go does not contain the SDK's native code. In Expo Go and on the web the package still loads, and every method rejects with an error that says so.
 
 Expo's own autolinking is required. The React Native module is a dependency of this package, not of your app, and the community autolinking, `EXPO_USE_COMMUNITY_AUTOLINKING=1`, links only the app's direct dependencies.
 
-Do not use the SDK beside an enabled `expo-updates`: each of the two decides which bundle the app runs. Remove `expo-updates` when you adopt the SDK.
+The prebuild fails while the app depends on `expo-updates` and its app config does not set `updates.enabled` to `false`: each of the two decides which bundle the app runs. Remove `expo-updates` when you adopt the SDK, or set `updates.enabled` to `false`.
 
 Live updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `BUILD_DEBUG`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`. The iOS run creates no binary, since it is not an archive; the Android release variant does and needs a login.
 
