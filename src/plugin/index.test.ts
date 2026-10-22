@@ -15,8 +15,13 @@ import { compileModsAsync, IOSConfig } from 'expo/config-plugins';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import withHotCodePush from '.';
 
-// the native files `expo prebuild` generates per SDK, from expo-template-bare-minimum 55.0.43, 56.0.37 and 57.0.28
-const FIXTURE_NAMES = ['expo-sdk-55', 'expo-sdk-56', 'expo-sdk-57'];
+// the native files `expo prebuild` generates per SDK, from expo-template-bare-minimum 55.0.43, 56.0.37, 57.0.28 and 58.0.25
+const FIXTURE_NAMES = [
+  'expo-sdk-55',
+  'expo-sdk-56',
+  'expo-sdk-57',
+  'expo-sdk-58',
+];
 
 const ENABLED_EXPO_UPDATES_MESSAGE =
   'HotCodePush and expo-updates cannot both serve updates. Set updates.enabled to false in your app config, or remove expo-updates.';

@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 The HotCodePush Expo SDK: `@hotcodepush/expo-ota-updates`, the config plugin that wires `@hotcodepush/react-native-code-push` into an Expo app at prebuild and re-exports its API.
-Stack: TypeScript, Expo's config plugins from `expo/config-plugins`, Vitest; Expo SDK 55 to 57, the range the peer dependency names.
+Stack: TypeScript, Expo's config plugins from `expo/config-plugins`, Vitest; Expo SDK 55 to 58, the range the peer dependency names.
 
 This package holds no native code and none of the SDK's behaviour: both are the React Native package's, in `react-native-code-push`, pinned to a commit in `package.json`.
 A change of the native code or of the API is a change there and a bump of that pin here.
@@ -19,7 +19,7 @@ src/plugin/react-native-package.ts           the Node expression that resolves a
 src/plugin/index.test.ts                     the plugin compiled over each fixture: every edit, every error, the second prebuild
 src/index.test.ts                            the API re-export loaded with the native module missing
 src/plugin/expo-react-host-factory.test.ts   each SDK's `ExpoReactHostFactory.kt` against the one `HotCodePushReactHost` was written against
-src/plugin/fixtures/expo-sdk-{55,56,57}/     the native files `expo prebuild` generates for each SDK, and Expo's `ExpoReactHostFactory.kt` of that SDK; outside ESLint and Prettier
+src/plugin/fixtures/expo-sdk-{55,56,57,58}/  the native files `expo prebuild` generates for each SDK, and Expo's `ExpoReactHostFactory.kt` of that SDK; outside ESLint and Prettier
 ```
 
 ## What the plugin edits
@@ -35,13 +35,13 @@ src/plugin/fixtures/expo-sdk-{55,56,57}/     the native files `expo prebuild` ge
 
 ## Commands
 
-| Command             | Does                                                                                    |
-| ------------------- | --------------------------------------------------------------------------------------- |
-| `npm run lint`      | ESLint and Prettier                                                                     |
-| `npm run typecheck` | TypeScript                                                                              |
-| `npm test`          | Vitest, the plugin over the three fixtures and the API loaded without the native module |
-| `npm run build`     | the TypeScript into `dist/`, which `app.plugin.js` loads                                |
-| `npm run verify`    | the four above, in that order                                                           |
+| Command             | Does                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| `npm run lint`      | ESLint and Prettier                                                                    |
+| `npm run typecheck` | TypeScript                                                                             |
+| `npm test`          | Vitest, the plugin over the four fixtures and the API loaded without the native module |
+| `npm run build`     | the TypeScript into `dist/`, which `app.plugin.js` loads                               |
+| `npm run verify`    | the four above, in that order                                                          |
 
 Run `npm run fmt` before every commit.
 No workflow here builds a native project: `ci.yml` runs the four commands and publishes the preview build, and the demo's own CI builds both platforms with the plugin at the commit the demo pins.
@@ -59,7 +59,7 @@ The demo and the CLI's `init` each pin a commit of this package.
 - **An edit that finds no place throws**, and the message names the file and what it lacks: no bundling phase, no embedded `main.jsbundle` returned from `bundleURL()`, no `use_native_modules!` line, a build file that is not Groovy, no Expo React host. Never a silent skip: the error fails the prebuild.
 - **A file of the React Native package is resolved through this package**, by `buildReactNativePackageFileResolution`: an isolated install, pnpm's by default, keeps the React Native package out of the app's `node_modules`. No path into `node_modules` is written into a native file.
 - **The API is the React Native package's.** `src/index.ts` re-exports it and adds nothing; an app imports from this package.
-- **Every edit and every error has a test** in `src/plugin/index.test.ts`, run over a copy of each fixture, the output of `expo-template-bare-minimum` for that SDK (55.0.43, 56.0.37, 57.0.28).
+- **Every edit and every error has a test** in `src/plugin/index.test.ts`, run over a copy of each fixture, the output of `expo-template-bare-minimum` for that SDK (55.0.43, 56.0.37, 57.0.28, 58.0.25).
 - **A new Expo SDK joins in one commit:** its template's files as a fixture, Expo's host factory beside it with the guard test's hash for that SDK, the peer range's upper bound and the README's table row; the lifecycle runs on devices on that SDK before the range moves.
 - **No Expo Go, no enabled `expo-updates` beside it.** The SDK's native code needs a development build or a release build; in Expo Go and on the web the package loads and every method rejects with the one error. An enabled `expo-updates` fails the prebuild, since it decides the app's bundle itself: remove it, or set `updates.enabled` to `false`.
 - **Prose names the feature over-the-air (OTA) updates:** "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update platform for React Native, Expo, Capacitor and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.

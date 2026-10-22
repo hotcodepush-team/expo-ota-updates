@@ -18,6 +18,7 @@ const CHECKED_FACTORY_SHA256_BY_SDK = new Map([
   [55, '12c7a812e557bbc5c58238241065841e85b3d3b295c3910ebea733e33ce2f91e'],
   [56, '12c7a812e557bbc5c58238241065841e85b3d3b295c3910ebea733e33ce2f91e'],
   [57, '12c7a812e557bbc5c58238241065841e85b3d3b295c3910ebea733e33ce2f91e'],
+  [58, '559ff74e536599c5a863822bb543766097b9faab01cf6fa876cbcefb426d5430'],
 ]);
 
 describe.each(FIXTURE_NAMES)("Expo's host factory in %s", fixtureName => {

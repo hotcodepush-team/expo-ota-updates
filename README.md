@@ -32,6 +32,7 @@ The package supports the Expo SDKs it is proven on. Its peer range on `expo` end
 | 55       | 0.83         | 15.1 | 7.0 (API 24) |
 | 56       | 0.85         | 16.4 | 7.0 (API 24) |
 | 57       | 0.86         | 16.4 | 7.0 (API 24) |
+| 58       | 0.88         | 16.4 | 7.0 (API 24) |
 
 The iOS and Android floors are Expo's own for each SDK.
 
