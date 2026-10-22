@@ -62,7 +62,8 @@ The demo and the CLI's `init` each pin a commit of this package.
 - **Every edit and every error has a test** in `src/plugin/index.test.ts`, run over a copy of each fixture, the output of `expo-template-bare-minimum` for that SDK (55.0.43, 56.0.37, 57.0.28).
 - **A new Expo SDK joins in one commit:** its template's files as a fixture, Expo's host factory beside it with the guard test's hash for that SDK, the peer range's upper bound and the README's table row; the lifecycle runs on devices on that SDK before the range moves.
 - **No Expo Go, no enabled `expo-updates` beside it.** The SDK's native code needs a development build or a release build; in Expo Go and on the web the package loads and every method rejects with the one error. An enabled `expo-updates` fails the prebuild, since it decides the app's bundle itself: remove it, or set `updates.enabled` to `false`.
-- **Prose names the feature over-the-air (OTA) updates:** "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update platform for Capacitor, React Native, Expo and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.
+- **Prose names the feature over-the-air (OTA) updates:** "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update platform for React Native, Expo, Capacitor and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.
+- **The supported frameworks are listed in one order:** React Native, Expo, Capacitor and Cordova, the larger communities first; this repository's own sentences lead with Expo.
 
 ## Agent workspace
 
