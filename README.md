@@ -1,6 +1,6 @@
 # Expo OTA updates by HotCodePush
 
-`@hotcodepush/expo-ota-updates` is the Expo package that delivers over-the-air updates to your app: an OTA update reaches installed apps in seconds, without a store review. Learn more at [hotcodepush.com/expo-ota-updates](https://hotcodepush.com/expo-ota-updates).
+`@hotcodepush/expo-ota-updates` is the Expo package that delivers over-the-air (OTA) updates to your app: an OTA update reaches installed apps in seconds, without a store review. Learn more at [hotcodepush.com/expo-ota-updates](https://hotcodepush.com/expo-ota-updates).
 
 It is a config plugin over [`@hotcodepush/react-native-code-push`](https://github.com/hotcodepush-team/react-native-code-push), the React Native module: the plugin wires the module into the native projects at prebuild, and the package re-exports the module's API.
 
@@ -53,7 +53,7 @@ Expo's own autolinking is required. The React Native module is a dependency of t
 
 The prebuild fails while the app depends on `expo-updates` and its app config does not set `updates.enabled` to `false`: each of the two decides which bundle the app runs. Remove `expo-updates` when you adopt the SDK, or set `updates.enabled` to `false`.
 
-Live updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `BUILD_DEBUG`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`. The iOS run creates no binary, since it is not an archive; the Android release variant does and needs a login.
+OTA updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `BUILD_DEBUG`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`. The iOS run creates no binary, since it is not an archive; the Android release variant does and needs a login.
 
 ## Usage
 
