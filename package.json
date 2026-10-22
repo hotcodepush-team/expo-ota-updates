@@ -1,7 +1,7 @@
 {
   "name": "@hotcodepush/expo-ota-updates",
   "version": "0.0.0",
-  "description": "Expo OTA updates by HotCodePush: the config plugin that wires over-the-air updates into your Expo app",
+  "description": "Expo OTA updates by HotCodePush: the config plugin that wires over-the-air (OTA) updates into your Expo app",
   "license": "MIT",
   "author": "Genz IT Solutions GmbH",
   "homepage": "https://hotcodepush.com/expo-ota-updates",
