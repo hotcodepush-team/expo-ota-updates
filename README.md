@@ -54,7 +54,7 @@ Expo's own autolinking is required. The React Native module is a dependency of t
 
 The prebuild fails while the app depends on `expo-updates` and its app config does not set `updates.enabled` to `false`: each of the two decides which bundle the app runs. Remove `expo-updates` when you adopt the SDK, or set `updates.enabled` to `false`.
 
-OTA updates are off in a debug build, where the development server serves the JavaScript: every check answers `SKIPPED` with `BUILD_DEBUG`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`. The iOS run creates no binary, since it is not an archive; the Android release variant does and needs a login.
+OTA updates are off in a debug build, where the development server serves the JavaScript: every check answers `skipped` with `build_debug`. Test an update in a release build: `npx expo run:ios --configuration Release` or `npx expo run:android --variant release`. The iOS run creates no binary, since it is not an archive; the Android release variant does and needs a login.
 
 ## Usage
 
@@ -62,7 +62,7 @@ OTA updates are off in a debug build, where the development server serves the Ja
 import { HotCodePush, useUpdates } from '@hotcodepush/expo-ota-updates';
 
 const result = await HotCodePush.sync();
-if (result.status === 'DOWNLOADED') {
+if (result.status === 'downloaded') {
   console.log(
     `release #${result.release.number} applies at ${result.applyStrategy}`,
   );
