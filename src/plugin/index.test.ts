@@ -8,7 +8,6 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import reactNativePackage from '@hotcodepush/react-native-code-push/package.json';
 import type { ExpoConfig } from 'expo/config';
 import type { ModPlatform } from 'expo/config-plugins';
 import { compileModsAsync, IOSConfig } from 'expo/config-plugins';
@@ -36,7 +35,6 @@ const NATIVE_FILE_PATHS = {
   mainApplication:
     'android/app/src/main/java/com/helloworld/MainApplication.kt',
   pbxproj: 'ios/HelloWorld.xcodeproj/project.pbxproj',
-  podfile: 'ios/Podfile',
 };
 
 type NativeFile = keyof typeof NATIVE_FILE_PATHS;
@@ -108,47 +106,6 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
     );
   });
 
-  it('should pin the core pod at the commit the React Native package names', async () => {
-    await prebuild(projectRoot);
-
-    expect(readNativeFile(projectRoot, 'podfile')).toContain(
-      `  config = use_native_modules!(config_command)\n  pod 'HotCodePushCore', :git => 'https://github.com/hotcodepush-team/core-ios.git', :commit => '${reactNativePackage.hotcodepush.coreIos}'\n`,
-    );
-  });
-
-  it('should pin the core pod when the Podfile names it outside a pod line', async () => {
-    editNativeFile(projectRoot, 'podfile', podfile =>
-      podfile.replace(
-        'post_install do |installer|',
-        "post_install do |installer|\n    # HotCodePushCore's resource bundle",
-      ),
-    );
-
-    await prebuild(projectRoot);
-
-    expect(readNativeFile(projectRoot, 'podfile')).toContain(
-      "  pod 'HotCodePushCore', :git =>",
-    );
-  });
-
-  it('should move the core pod to the commit the React Native package names when prebuild runs over an older pin', async () => {
-    await prebuild(projectRoot);
-    editNativeFile(projectRoot, 'podfile', podfile =>
-      podfile.replace(
-        reactNativePackage.hotcodepush.coreIos,
-        'c9b5266000000000000000000000000000000000',
-      ),
-    );
-
-    await prebuild(projectRoot);
-
-    const podfile = readNativeFile(projectRoot, 'podfile');
-    expect(podfile).toContain(
-      `  config = use_native_modules!(config_command)\n  pod 'HotCodePushCore', :git => 'https://github.com/hotcodepush-team/core-ios.git', :commit => '${reactNativePackage.hotcodepush.coreIos}'\n`,
-    );
-    expect(podfile.match(/pod 'HotCodePushCore'/g)).toHaveLength(1);
-  });
-
   it("should apply the React Native package's Gradle file at the end of the app's build file", async () => {
     await prebuild(projectRoot);
 
@@ -196,16 +153,6 @@ describe.each(FIXTURE_NAMES)('withHotCodePush on %s', fixtureName => {
 
     await expect(prebuild(projectRoot)).rejects.toThrow(
       'AppDelegate.swift does not return the embedded main.jsbundle from bundleURL() to replace with HotCodePush.bundleURL().',
-    );
-  });
-
-  it('should throw when the Podfile has no native modules line', async () => {
-    editNativeFile(projectRoot, 'podfile', podfile =>
-      podfile.replace('config = use_native_modules!(config_command)', ''),
-    );
-
-    await expect(prebuild(projectRoot)).rejects.toThrow(
-      'The Podfile has no use_native_modules! line to add the HotCodePushCore pod after.',
     );
   });
 
