@@ -64,7 +64,7 @@ Set `downloadStrategy` or `applyStrategy` to `manual` and call `downloadUpdate()
 
 ## Documentation
 
-See [hotcodepush.com/docs/expo](https://hotcodepush.com/docs/expo) for the configuration, methods, events, types and reasons.
+See [hotcodepush.com/docs/sdks/expo](https://hotcodepush.com/docs/sdks/expo) for the configuration, methods, events, types and reasons.
 
 ## Development
 
