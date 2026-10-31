@@ -11,10 +11,8 @@ const ENABLED_EXPO_UPDATES_MESSAGE =
 
 const EXPO_UPDATES_PACKAGE_NAME = 'expo-updates';
 
-/**
- * expo-updates decides the bundle the app runs, as the SDK does: beside an enabled expo-updates, Android would run
- * the SDK's bundle and iOS Expo's. The prebuild of either platform fails instead.
- */
+// expo-updates also decides which bundle the app runs.
+// With both enabled, Android would run the HotCodePush bundle and iOS the Expo one.
 export const withEnabledExpoUpdatesRefused: ConfigPlugin = config =>
   withDangerousMod(
     withDangerousMod(config, ['android', refuseEnabledExpoUpdates]),
@@ -30,7 +28,7 @@ function refuseEnabledExpoUpdates(
   return config;
 }
 
-// an unset updates.enabled counts as enabled: Expo enables expo-updates as soon as the config names an update URL
+// Expo enables expo-updates as soon as the config names an update URL, so an unset flag counts as enabled.
 function isExpoUpdatesEnabled(
   config: ExpoConfig,
   projectRoot: string,
@@ -40,7 +38,7 @@ function isExpoUpdatesEnabled(
   );
 }
 
-// the dependencies autolinking starts from: a package listed in either is linked into the native projects
+// Autolinking links a package listed in either dependencies or devDependencies.
 function isExpoUpdatesInstalled(projectRoot: string): boolean {
   const { dependencies = {}, devDependencies = {} } =
     getPackageJson(projectRoot);

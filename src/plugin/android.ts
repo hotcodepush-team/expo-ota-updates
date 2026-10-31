@@ -6,9 +6,11 @@ const EXPO_REACT_HOST_CALL = 'ExpoReactHostFactory.getDefaultReactHost(';
 
 const EXPO_REACT_HOST_IMPORT = 'import expo.modules.ExpoReactHostFactory';
 
+const EXPO_METRO_ENTRY_PATH = '.expo/.virtual-metro-entry';
+
 const GRADLE_FILE_NAME = 'hotcodepush.gradle';
 
-// Node resolves the file when Gradle evaluates the build file
+// Node resolves the file path when Gradle evaluates the build file.
 const GRADLE_FILE_APPLY_LINE = `apply from: ["node", "--print", "${buildReactNativePackageFileResolution(`android/${GRADLE_FILE_NAME}`)}"].execute(null, rootDir).text.trim()`;
 
 const REACT_HOST_CALL = 'HotCodePushReactHost.getDefaultReactHost(';
@@ -16,10 +18,7 @@ const REACT_HOST_CALL = 'HotCodePushReactHost.getDefaultReactHost(';
 const REACT_HOST_IMPORT =
   'import com.hotcodepush.reactnative.HotCodePushReactHost';
 
-/**
- * `app/build.gradle` applies the Gradle file the React Native package ships, which holds the task that runs
- * the build step: one line, so the logic lives in the package's file.
- */
+// The build logic lives in the Gradle file of the React Native package, so the app needs only one line.
 export const withBinaryCreateGradleFile: ConfigPlugin = config =>
   withAppBuildGradle(config, gradleConfig => {
     gradleConfig.modResults.contents = addBinaryCreateGradleFile(
@@ -28,10 +27,7 @@ export const withBinaryCreateGradleFile: ConfigPlugin = config =>
     return gradleConfig;
   });
 
-/**
- * `MainApplication.kt` builds its React host with the SDK's `getDefaultReactHost`, which asks for the served bundle
- * at every start and reload, in place of Expo's; the arguments stay.
- */
+// The HotCodePush host asks for the served bundle at every start and reload.
 export const withServedBundleReactHost: ConfigPlugin = config =>
   withMainApplication(config, mainApplicationConfig => {
     mainApplicationConfig.modResults.contents = addServedBundleReactHost(
@@ -67,11 +63,11 @@ function addServedBundleReactHost(mainApplication: string): string {
       `MainApplication.kt does not build its React host with Expo's ${EXPO_REACT_HOST_CALL}) to replace with ${REACT_HOST_CALL}).`,
     );
   }
-  // a debug build asks Metro for Expo's entry, where the SDK's default is a bare app's index
+  // A debug build must ask Metro for the Expo entry. The SDK default is the index of a bare app.
   return mainApplication
     .replace(EXPO_REACT_HOST_IMPORT, REACT_HOST_IMPORT)
     .replace(
       EXPO_REACT_HOST_CALL,
-      `${REACT_HOST_CALL}\n      jsMainModulePath = ".expo/.virtual-metro-entry",`,
+      `${REACT_HOST_CALL}\n      jsMainModulePath = "${EXPO_METRO_ENTRY_PATH}",`,
     );
 }

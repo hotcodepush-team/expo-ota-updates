@@ -1,8 +1,5 @@
-/**
- * The Node expression that resolves a file of the React Native package through this package, the one the app depends
- * on, as the Expo template resolves its own transitive packages: an isolated install, pnpm's by default, keeps the
- * React Native package out of the app's `node_modules`.
- */
+// Resolves through this package, which the app depends on directly.
+// An isolated install, such as pnpm by default, keeps the React Native package out of the app's `node_modules`.
 export function buildReactNativePackageFileResolution(
   filePath: string,
 ): string {

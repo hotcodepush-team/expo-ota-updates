@@ -13,7 +13,7 @@ const FIXTURE_NAMES = readdirSync(FIXTURES_PATH, { withFileTypes: true })
   .filter(entry => entry.isDirectory())
   .map(({ name }) => name);
 
-// HotCodePushReactHost stands in for Expo's host factory on Android; per supported SDK, the factory it was checked against
+// HotCodePushReactHost replaces Expo's host factory on Android, so it must follow every change to it.
 const CHECKED_FACTORY_SHA256_BY_SDK = new Map([
   [55, '12c7a812e557bbc5c58238241065841e85b3d3b295c3910ebea733e33ce2f91e'],
   [56, '12c7a812e557bbc5c58238241065841e85b3d3b295c3910ebea733e33ce2f91e'],
