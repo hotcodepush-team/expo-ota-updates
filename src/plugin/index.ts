@@ -10,7 +10,8 @@ import { withBinaryCreatePhase, withServedBundleUrl } from './ios';
 /**
  * Wires HotCodePush into an Expo project at prebuild, as `hotcodepush init` does for a bare React Native app.
  *
- * Both native apps run the bundle the SDK serves, and each build runs binary create after the JavaScript is bundled.
+ * In a release build both native apps run the bundle the SDK serves. The build step runs after the JavaScript is bundled:
+ * binary create in a store build, resource-file write in any other.
  * A later prebuild leaves earlier edits as they are. An enabled expo-updates fails the prebuild.
  */
 const withHotCodePush: ConfigPlugin = config =>
