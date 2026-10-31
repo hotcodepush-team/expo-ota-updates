@@ -7,7 +7,7 @@ const BINARY_CREATE_PHASE_NAME = 'Create HotCodePush binary';
 
 const BINARY_CREATE_SCRIPT_NAME = 'binary-create-xcode.sh';
 
-// the lines of the phase as a pbxproj string carries them, the line breaks escaped
+// A pbxproj string stores its line breaks escaped.
 const BINARY_CREATE_PHASE_SCRIPT = [
   'set -e',
   '',
@@ -32,25 +32,19 @@ const BUNDLING_PHASE_NAME = 'Bundle React Native code and images';
 const EMBEDDED_BUNDLE_URL_CALL =
   'Bundle.main.url(forResource: "main", withExtension: "jsbundle")';
 
-// the build step reads the version and build from the built app's processed Info.plist: declared as the phase's input,
-// Xcode processes the plist before it runs the phase
+// The build step reads the version and build from the processed Info.plist.
+// As an input of the phase, the plist is processed before the phase runs.
 const INFO_PLIST_INPUT_PATH = '"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)"';
 
 const SWIFT_MODULE_IMPORT = 'import HotcodepushReactNativeCodePush';
 
-/**
- * The app target runs the build step right after "Bundle React Native code and images", whose output it hashes.
- */
 export const withBinaryCreatePhase: ConfigPlugin = config =>
   withXcodeProject(config, xcodeConfig => {
     addBinaryCreatePhase(xcodeConfig.modResults);
     return xcodeConfig;
   });
 
-/**
- * A release build's `bundleURL()` returns the bundle the SDK serves in place of the embedded `main.jsbundle`;
- * the debug build's Metro line stays as it is.
- */
+// Only the release branch of `bundleURL()` changes. A debug build still asks Metro.
 export const withServedBundleUrl: ConfigPlugin = config =>
   withAppDelegate(config, appDelegateConfig => {
     appDelegateConfig.modResults.contents = addServedBundleUrl(
@@ -80,10 +74,10 @@ function addBinaryCreatePhase(project: XcodeProject): void {
       shellScript: BINARY_CREATE_PHASE_SCRIPT,
     },
   );
-  // the build step writes hotcodepush.json, which carries the build's time, on every build; a phase without outputs
-  // that is not marked so makes Xcode warn
+  // The build step writes hotcodepush.json with the build time on every build.
+  // Xcode warns about a phase without outputs unless it is marked like this.
   buildPhase.alwaysOutOfDate = 1;
-  // the package appends the phase to the target; the build step belongs right after the bundling it reads
+  // addBuildPhase appends the phase. The build step hashes the bundle, so it must run right after the bundling phase.
   const { buildPhases } = target;
   const binaryCreatePhase = buildPhases.pop();
   if (binaryCreatePhase !== undefined) {
@@ -103,9 +97,6 @@ function addServedBundleUrl(appDelegate: string): string {
   return `${SWIFT_MODULE_IMPORT}\n${appDelegate.replace(EMBEDDED_BUNDLE_URL_CALL, BUNDLE_URL_CALL)}`;
 }
 
-/**
- * The native target that bundles React Native's JavaScript, with the position of that phase among its phases.
- */
 function findBundlingTarget(project: XcodeProject):
   | {
       buildPhases: { value: string; comment?: string }[];
@@ -129,9 +120,7 @@ function findBundlingTarget(project: XcodeProject):
   return undefined;
 }
 
-/**
- * The phase is recognised by the script it runs, whatever it is named.
- */
+// Matches the script, not the name, so a renamed phase still counts.
 function hasBinaryCreatePhase(project: XcodeProject): boolean {
   return Object.values(
     project.hash.project.objects.PBXShellScriptBuildPhase ?? {},

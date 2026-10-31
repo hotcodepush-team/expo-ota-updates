@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { HotCodePush } from '.';
 
-// Expo Go carries no native module of ours: React Native's registry answers the module's name with null
+// Expo Go has no HotCodePush native module, so the registry returns null for it.
 vi.mock('react-native', () => ({
   TurboModuleRegistry: { get: () => null },
 }));

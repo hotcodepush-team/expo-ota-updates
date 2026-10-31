@@ -14,7 +14,7 @@ import { compileModsAsync, IOSConfig } from 'expo/config-plugins';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import withHotCodePush from '.';
 
-// the native files `expo prebuild` generates per SDK, from expo-template-bare-minimum 55.0.43, 56.0.37, 57.0.28 and 58.0.25
+// Native files from `expo prebuild`, made with expo-template-bare-minimum 55.0.43, 56.0.37, 57.0.28 and 58.0.25.
 const FIXTURE_NAMES = [
   'expo-sdk-55',
   'expo-sdk-56',
