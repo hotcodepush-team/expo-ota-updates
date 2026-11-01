@@ -17,7 +17,6 @@ src/plugin/android.ts                        the Gradle line, `MainApplication.k
 src/plugin/expo-updates.ts                   the refusal of an enabled expo-updates at prebuild
 src/plugin/react-native-package.ts           the Node expression that resolves a file of the React Native package through this one
 src/plugin/index.test.ts                     the plugin compiled over each fixture: every edit, every error, the second prebuild
-src/index.test.ts                            the API re-export loaded with the native module missing
 src/plugin/expo-react-host-factory.test.ts   each SDK's `ExpoReactHostFactory.kt` against the one `HotCodePushReactHost` was written against
 src/plugin/fixtures/expo-sdk-{55,56,57,58}/  the native files `expo prebuild` generates for each SDK, and Expo's `ExpoReactHostFactory.kt` of that SDK; outside ESLint and Prettier
 ```
