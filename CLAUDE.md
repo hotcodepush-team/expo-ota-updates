@@ -54,6 +54,11 @@ The demo and the CLI's `init` each pin a commit of this package.
 
 ## Rules
 
+- Prose names the feature over-the-air (OTA) updates: "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update platform for React Native, Expo, Capacitor and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.
+- Prose names the supported frameworks in the order React Native, Expo, Capacitor and Cordova, the larger communities first; a list a reader scans for their own item, such as an enum's choices, a prompt, a tab set or a table, sorts alphabetically.
+- This repository's own sentences lead with Expo.
+- A test earns its place by catching a bug nothing else catches, at the lowest layer that can prove it; one test per branch, never per value, and nothing for what the types, the framework or a library guarantee.
+- A new test names the behaviour or the bug it proves; if deleting the production code would not fail it, it does not get in.
 - **An edit is recognised by what it wrote** and left as it is: the phase by its script's name in any shell phase, the Gradle line by `hotcodepush.gradle`, the bundle URL by `HotCodePush.bundleURL()`, the host by the SDK's import. An edit that changes its shape reaches a prebuilt project only through `npx expo prebuild --clean`.
 - **An edit that finds no place throws**, and the message names the file and what it lacks: no bundling phase, no embedded `main.jsbundle` returned from `bundleURL()`, a build file that is not Groovy, no Expo React host. Never a silent skip: the error fails the prebuild.
 - **A file of the React Native package is resolved through this package**, by `buildReactNativePackageFileResolution`: an isolated install, pnpm's by default, keeps the React Native package out of the app's `node_modules`. No path into `node_modules` is written into a native file.
@@ -61,10 +66,6 @@ The demo and the CLI's `init` each pin a commit of this package.
 - **Every edit and every error has a test** in `src/plugin/index.test.ts`, run over a copy of each fixture, the output of `expo-template-bare-minimum` for that SDK (55.0.43, 56.0.37, 57.0.28, 58.0.25).
 - **A new Expo SDK joins in one commit:** its template's files as a fixture, Expo's host factory beside it with the guard test's hash for that SDK, the peer range's upper bound and the README's table row; the lifecycle runs on devices on that SDK before the range moves.
 - **No Expo Go, no enabled `expo-updates` beside it.** The SDK's native code needs a development build or a release build; in Expo Go and on the web the package loads and every method rejects with the one error. An enabled `expo-updates` fails the prebuild, since it decides the app's bundle itself: remove it, or set `updates.enabled` to `false`.
-- **Prose names the feature over-the-air (OTA) updates:** "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update platform for React Native, Expo, Capacitor and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.
-- **The supported frameworks are listed in one order:** React Native, Expo, Capacitor and Cordova, the larger communities first; this repository's own sentences lead with Expo.
-- A test earns its place by catching a bug nothing else catches, at the lowest layer that can prove it; one test per branch, never per value, and nothing for what the types, the framework or a library guarantee.
-- A new test names the behaviour or the bug it proves; if deleting the production code would not fail it, it does not get in.
 
 ## Comments
 
@@ -76,5 +77,7 @@ The demo and the CLI's `init` each pin a commit of this package.
 
 ## Agent workspace
 
-- `.claude/skills/` holds the developer skills copied from `hotcodepush-team/.github`, pinned in `skills-lock.json`.
+- `.mcp.json` registers the Expo server; the HotCodePush server joins when it exists.
+- `.claude/skills/` holds the developer skills copied from `hotcodepush-team/.github` with the skills CLI and pinned in `skills-lock.json`; update them with `npx skills update`.
+- `.github/copilot-instructions.md` holds the review criteria, the only Copilot-specific file.
 - Commits are conventional commits; `main` is trunk, CI is the gate, and a commit that lands an issue says `Closes #<n>`.
