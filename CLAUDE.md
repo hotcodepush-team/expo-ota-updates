@@ -63,6 +63,8 @@ The demo and the CLI's `init` each pin a commit of this package.
 - **No Expo Go, no enabled `expo-updates` beside it.** The SDK's native code needs a development build or a release build; in Expo Go and on the web the package loads and every method rejects with the one error. An enabled `expo-updates` fails the prebuild, since it decides the app's bundle itself: remove it, or set `updates.enabled` to `false`.
 - **Prose names the feature over-the-air (OTA) updates:** "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update platform for React Native, Expo, Capacitor and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.
 - **The supported frameworks are listed in one order:** React Native, Expo, Capacitor and Cordova, the larger communities first; this repository's own sentences lead with Expo.
+- A test earns its place by catching a bug nothing else catches, at the lowest layer that can prove it; one test per branch, never per value, and nothing for what the types, the framework or a library guarantee.
+- A new test names the behaviour or the bug it proves; if deleting the production code would not fail it, it does not get in.
 
 ## Comments
 
