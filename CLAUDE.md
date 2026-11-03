@@ -51,6 +51,12 @@ A consumer pins a commit and bumps it deliberately — never `@main`, whose movi
 The React Native package comes the same way; its native code, the iOS core its pod carries and its API all arrive as a bump of that sha.
 The demo and the CLI's `init` each pin a commit of this package.
 
+## Releases
+
+Release-please keeps a release pull request open on `main`, and merging it tags the release.
+`release.yml` then publishes to npm with provenance over OIDC, `prepublishOnly` running the build first.
+A published package never depends on a pkg.pr.new URL: the React Native package's pin above moves to its npm release, `^0.1.0`, before this package's first release.
+
 ## Rules
 
 - Prose names the feature over-the-air (OTA) updates: "over-the-air (OTA) update" on the first mention of a surface, "OTA update" after it, and the appositive "HotCodePush, the over-the-air (OTA) update service for React Native, Expo, Capacitor and Cordova". "Live update" is the Capacitor community's word: it stays in the `capacitor-live-updates` package name and in a list of alternative names for search, never as HotCodePush's own term.

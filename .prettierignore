@@ -3,3 +3,7 @@ dist
 node_modules
 package-lock.json
 src/plugin/fixtures
+
+# Written by release-please
+.release-please-manifest.json
+CHANGELOG.md
