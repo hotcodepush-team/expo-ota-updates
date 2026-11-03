@@ -1,10 +1,10 @@
 {
   "name": "@hotcodepush/expo-ota-updates",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Expo OTA updates by HotCodePush: the config plugin that wires over-the-air (OTA) updates into your Expo app",
   "license": "MIT",
   "author": "Genz IT Solutions GmbH",
-  "homepage": "https://hotcodepush.com/expo-ota-updates",
+  "homepage": "https://hotcodepush.com/docs/sdks/expo",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hotcodepush-team/expo-ota-updates.git"
@@ -38,6 +38,7 @@
     "clean": "rimraf ./dist",
     "fmt": "eslint . --fix && prettier --write .",
     "lint": "eslint . && prettier --check .",
+    "prepublishOnly": "npm run build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "verify": "npm run lint && npm run typecheck && npm test && npm run build"
