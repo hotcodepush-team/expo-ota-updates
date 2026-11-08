@@ -55,7 +55,7 @@
     "verify": "npm run lint && npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
-    "@hotcodepush/react-native-code-push": "^0.1.0"
+    "@hotcodepush/react-native-code-push": "^0.2.0"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
