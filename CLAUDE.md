@@ -44,18 +44,18 @@ src/plugin/fixtures/expo-sdk-{55,56,57,58}/  the native files `expo prebuild` ge
 Run `npm run fmt` before every commit.
 No workflow here builds a native project: `ci.yml` runs the four commands and publishes the preview build, and the demo's own CI builds both platforms with the plugin at the commit the demo pins.
 
-## Dependencies during the build phase
+## Dependencies
 
-Consumers pin the preview builds pkg.pr.new publishes from `ci.yml` on every push to `main` and every pull request, never npm: `npm install https://pkg.pr.new/hotcodepush-team/expo-ota-updates/@hotcodepush/expo-ota-updates@<sha>`.
-A consumer pins a commit and bumps it deliberately — never `@main`, whose moving content breaks `npm ci` against the lockfile's integrity hash.
-The React Native package comes the same way; its native code, the iOS core its pod carries and its API all arrive as a bump of that sha.
-The demo and the CLI's `init` each pin a commit of this package.
+Consumers install the npm release, `npm install @hotcodepush/expo-ota-updates`, as the README shows.
+`ci.yml` still publishes every push to `main` and every pull request to pkg.pr.new, so a commit can be tried before its release: `npm install https://pkg.pr.new/hotcodepush-team/expo-ota-updates/@hotcodepush/expo-ota-updates@<sha>`, pinned by commit, never `@main`, whose moving content breaks `npm ci` against the lockfile's integrity hash.
+The React Native package comes from its npm release, `^0.2.0` in `package.json`. Its native code, the iOS core its pod carries and its API all arrive as a bump of that version, and a change there is tried through its pkg.pr.new build by commit, the pin returning to the release before this package releases.
+The demo and the CLI's `init` each pin a version of this package.
 
 ## Releases
 
 Release-please keeps a release pull request open on `main`, and merging it tags the release.
 `release.yml` then publishes to npm with provenance over OIDC, `prepublishOnly` running the build first.
-A published package never depends on a pkg.pr.new URL: the React Native package's pin above moves to its npm release, `^0.1.0`, before this package's first release.
+A published package never depends on a pkg.pr.new URL.
 
 ## Rules
 
