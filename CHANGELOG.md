@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/hotcodepush-team/expo-ota-updates/compare/v0.1.1...v0.2.0) (2026-11-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* setAttributes(attributes) becomes setAttributes({ attributes }), so setAttributes({ plan: 'enterprise' }) is now setAttributes({ attributes: { plan: 'enterprise' } }).
+
+### Features
+
+* setAttributes takes { attributes } ([#24](https://github.com/hotcodepush-team/expo-ota-updates/issues/24)) ([8e155ae](https://github.com/hotcodepush-team/expo-ota-updates/commit/8e155ae8953ce069a053eaafaf1a80c5b1a6e26f))
+
 ## [0.1.1](https://github.com/hotcodepush-team/expo-ota-updates/compare/v0.1.0...v0.1.1) (2026-11-08)
 
 
