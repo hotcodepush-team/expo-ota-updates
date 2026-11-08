@@ -8,11 +8,11 @@ It is a config plugin over [`@hotcodepush/react-native-code-push`](https://githu
 ## Installation
 
 `npx hotcodepush init` installs the package, adds the config plugin to the app config and writes `hotcodepush.json`.
-By hand, until the package is on npm, install the preview build pkg.pr.new publishes for every commit on `main`, pinned to a commit, together with the CLI the native builds call, and list the plugin:
+By hand, install the package together with the CLI the native builds call, and list the plugin:
 
 ```sh
-npm install https://pkg.pr.new/hotcodepush-team/expo-ota-updates/@hotcodepush/expo-ota-updates@<sha>
-npm install --save-dev https://pkg.pr.new/hotcodepush-team/cli/hotcodepush@<sha>
+npm install @hotcodepush/expo-ota-updates
+npm install --save-dev hotcodepush
 ```
 
 ```json
