@@ -35,9 +35,6 @@ It is a config plugin over [`@hotcodepush/react-native-code-push`](https://githu
 | 57       | 0.86         | 16.4 | 7.0 (API 24) |
 | 58       | 0.88         | 16.4 | 7.0 (API 24) |
 
-The app runs in a development or release build of your own, never in Expo Go.
-Remove `expo-updates`, or set `updates.enabled` to `false`, since both decide which bundle the app runs.
-
 ## Demo
 
 [expo-ota-updates-demo](https://github.com/hotcodepush-team/expo-ota-updates-demo) is an Expo app with the package wired in, built on both platforms and released through the GitHub Action on every merge. [ng-native-ota-updates-demo](https://github.com/hotcodepush-team/ng-native-ota-updates-demo) does the same for an Angular app on Expo through [NG Native](https://ng-native.com).
@@ -66,7 +63,7 @@ An agent that runs commands installs the package, creates the app and the channe
 npx hotcodepush init
 ```
 
-`init` signs you in, picks or creates the app, installs the package, adds the config plugin to the app config, writes `hotcodepush.json` and offers a signing key. Run `npx expo prebuild`, then build the app once in release, an Xcode archive, EAS Build or a Gradle release variant, so the store build registers itself. Then change something and ship it:
+`init` signs you in, picks or creates the app, installs the package, adds the config plugin to the app config, writes `hotcodepush.json` and offers a signing key. Remove `expo-updates`, or set `updates.enabled` to `false`, since both decide which bundle the app runs. Run `npx expo prebuild`, then build the app once in release, an Xcode archive, EAS Build or a Gradle release variant, so the store build registers itself. The app runs in a build of your own, never in Expo Go. Then change something and ship it:
 
 ```sh
 npx hotcodepush release create --platform ios
