@@ -9,7 +9,7 @@ Learn more at [hotcodepush.com/expo-ota-updates](https://hotcodepush.com/expo-ot
 
 It is a config plugin over [`@hotcodepush/react-native-code-push`](https://github.com/hotcodepush-team/react-native-code-push): the plugin wires the module into the native projects at prebuild, and the package re-exports the module's API.
 
-<a href="https://hotcodepush.com/docs/quickstart">
+<a href="https://hotcodepush.com/">
   <img alt="Ship updates in seconds. Over-the-air updates for React Native, Expo, Capacitor and Cordova. Get started." src="https://hotcodepush.com/assets/banners/readme-banner-ember.png" width="100%" />
 </a>
 
